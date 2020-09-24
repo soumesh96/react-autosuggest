@@ -1,19 +1,22 @@
 import React, { useState } from "react";
-import '../../App.css';
+
+import { userList, highlightSuggestion } from "../../commonConfig";
+import "../../App.css";
 
 const Autocomplete = (props) => {
-  const { suggestions } = props;
   const [activeSuggestion, setActiveSuggestion] = useState(0);
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [userInput, setUserInput] = useState('');
+  const [userInput, setUserInput] = useState("");
 
-  const onChange = e => {
+  const onChange = (e) => {
     const userInput = e.target.value;
 
-    const filteredSuggestions = suggestions.filter(
-      suggestion =>
-        (suggestion.id.toLowerCase().indexOf(userInput.toLowerCase()) > -1) || (suggestion.name.toLowerCase().indexOf(userInput.toLowerCase()) > -1) | (suggestion.address.toLowerCase().indexOf(userInput.toLowerCase()) > -1)
+    const filteredSuggestions = userList.filter(
+      (suggestion) =>
+        suggestion.id.toLowerCase().indexOf(userInput.toLowerCase()) > -1 ||
+        suggestion.name.toLowerCase().indexOf(userInput.toLowerCase()) > -1 ||
+        suggestion.address.toLowerCase().indexOf(userInput.toLowerCase()) > -1
     );
 
     setActiveSuggestion(0);
@@ -23,9 +26,8 @@ const Autocomplete = (props) => {
   };
 
   const onClick = (id) => {
-    const selectedSuggestion = suggestions.filter(
-      suggestion =>
-        (suggestion.id === id)
+    const selectedSuggestion = userList.filter(
+      (suggestion) => suggestion.id === id
     )[0].name;
     setActiveSuggestion(0);
     setFilteredSuggestions([]);
@@ -35,9 +37,9 @@ const Autocomplete = (props) => {
 
   const onMouse = (id) => {
     setActiveSuggestion(id);
-  }
+  };
 
-  const onKeyDown = e => {
+  const onKeyDown = (e) => {
     if (e.keyCode === 13) {
       setActiveSuggestion(0);
       setShowSuggestions(false);
@@ -72,11 +74,17 @@ const Autocomplete = (props) => {
             }
 
             return (
-              <li className={className} value={suggestion.name} key={suggestion.id} onClick={() => onClick(suggestion.id)} onMouseOver={() => onMouse(index)}>
+              <li
+                className={className}
+                value={suggestion.name}
+                key={suggestion.id}
+                onClick={() => onClick(suggestion.id)}
+                onMouseOver={() => onMouse(index)}
+              >
                 <div>
-                  <p>{suggestion.id}</p>
-                  <p>{suggestion.name}</p>
-                  <p>{suggestion.address}</p>
+                  {highlightSuggestion(suggestion.id, userInput)}
+                  {highlightSuggestion(suggestion.name, userInput)}
+                  {highlightSuggestion(suggestion.address, userInput)}
                 </div>
               </li>
             );
@@ -85,9 +93,7 @@ const Autocomplete = (props) => {
       );
     } else {
       suggestionsListComponent = (
-        <div className="noSuggestions">
-          No user Found
-        </div>
+        <div className="noSuggestions">No user Found</div>
       );
     }
   }
@@ -104,11 +110,9 @@ const Autocomplete = (props) => {
           value={userInput}
         />
       </div>
-      <div>
-        {suggestionsListComponent}
-      </div>
+      <div>{suggestionsListComponent}</div>
     </div>
   );
-}
+};
 
 export default Autocomplete;
